@@ -562,10 +562,9 @@ public final class StringExtensions {
 	
 	/**
 	 * @param cs
-	 * @param radix
 	 * @param def
 	 * @return float
-	 * @see Float#parseFloat(String, int)
+	 * @see Float#parseFloat(String)
 	 */
 	public static float toFloat(CharSequence cs, float def) {
 		if (cs == null) {
@@ -609,10 +608,9 @@ public final class StringExtensions {
 	
 	/**
 	 * @param cs
-	 * @param radix
 	 * @param def
 	 * @return double
-	 * @see Double#parseFloat(String, int)
+	 * @see Double#parseDouble(String)
 	 */
 	public static double toDouble(CharSequence cs, double def) {
 		if (cs == null) {
@@ -752,7 +750,7 @@ public final class StringExtensions {
 	
 	/**
 	 * @param cs
-	 * @param format
+	 * @param pattern
 	 * @return the parsed date
 	 * @throws IllegalArgumentException if the pattern is invalid or the text to parse is invalid
 	 * @see DateTime#parse(String, org.joda.time.format.DateTimeFormatter)
