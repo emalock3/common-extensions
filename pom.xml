@@ -87,4 +87,11 @@
 			<url>https://github.com/emalock3/mvn-repo/blob/master/</url>
 		</repository>
 	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>Temporary Local Repository</name>
+			<url>file://${project.build.directory}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
 </project>
