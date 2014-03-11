@@ -20,7 +20,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.AlgorithmParameterGenerator;
 import java.security.AlgorithmParameters;
 import java.security.KeyFactory;
@@ -237,7 +236,7 @@ public final class StringExtensions {
 		if (cs == null) {
 			return null;
 		}
-		return Paths.get(toURI(cs));
+		return toFile(cs).toPath();
 	}
 	
 	/**
@@ -325,7 +324,10 @@ public final class StringExtensions {
 		try {
 			return Byte.valueOf(s, radix);
 		} catch (NumberFormatException ignore) {
-			LOGGER.warn(ignore.getMessage());
+			LOGGER.debug(
+					"{} has occurred at {}#toByteObject(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
@@ -392,7 +394,10 @@ public final class StringExtensions {
 		try {
 			return Short.valueOf(cs.toString(), radix);
 		} catch (NumberFormatException ignore) {
-			LOGGER.warn(ignore.getMessage());
+			LOGGER.debug(
+					"{} has occurred at {}#toShortObject(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
@@ -459,7 +464,10 @@ public final class StringExtensions {
 		try {
 			return Integer.valueOf(cs.toString(), radix);
 		} catch (NumberFormatException ignore) {
-			LOGGER.warn(ignore.getMessage());
+			LOGGER.debug(
+					"{} has occurred at {}#toIntObject(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
@@ -526,7 +534,10 @@ public final class StringExtensions {
 		try {
 			return Long.valueOf(cs.toString(), radix);
 		} catch (NumberFormatException ignore) {
-			LOGGER.warn(ignore.getMessage());
+			LOGGER.debug(
+					"{} has occurred at {}#toLongObject(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
@@ -543,7 +554,10 @@ public final class StringExtensions {
 		try {
 			return new BigInteger(cs.toString());
 		} catch (NumberFormatException ignore) {
-			LOGGER.warn(ignore.getMessage());
+			LOGGER.debug(
+					"{} has occurred at {}#toBigInteger(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
@@ -589,7 +603,10 @@ public final class StringExtensions {
 		try {
 			return Float.valueOf(cs.toString());
 		} catch (NumberFormatException ignore) {
-			LOGGER.warn(ignore.getMessage());
+			LOGGER.debug(
+					"{} has occurred at {}#toFloatObject(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
@@ -635,7 +652,10 @@ public final class StringExtensions {
 		try {
 			return Double.valueOf(cs.toString());
 		} catch (NumberFormatException ignore) {
-			LOGGER.warn(ignore.getMessage());
+			LOGGER.debug(
+					"{} has occurred at {}#toDoubleObject(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
@@ -651,8 +671,11 @@ public final class StringExtensions {
 		}
 		try {
 			return new BigDecimal(cs.toString());
-		} catch (NumberFormatException e) {
-			LOGGER.warn(e.getMessage());
+		} catch (NumberFormatException ignore) {
+			LOGGER.debug(
+					"{} has occurred at {}#toBigDecimal(CharSequence, int). {}",
+					ignore.getClass().getName(),
+					StringExtensions.class.getName(), ignore.getMessage());
 			return null;
 		}
 	}
