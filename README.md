@@ -4,7 +4,7 @@ The common-extensions provides utility methods for some basic classes.
 When project is using `@ExtensionMethod` annotation of Lombok they can be used as a Java extension as shown below.
 
 ### example
-	@ExtensionMethod(CharSequenceConverter.class)
+	@ExtensionMethod(StringExtensions.class)
 	public class Example {
 		public void hello() {
 			System.out.println("1234".toInt());
