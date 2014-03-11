@@ -10,7 +10,7 @@
 
 	<groupId>com.github.emalock.common</groupId>
 	<artifactId>common-extensions</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 
 	<name>Java Common Extensions</name>
