@@ -692,4 +692,79 @@ public class StringExtensionsTest {
 		assertThat(new StringBuilder("UTF-8").toCharset(), is(Charset.forName("UTF-8")));
 	}
 
+	@Test
+	public void testToCipherCharSequenceParameters() {
+		assertThat(((String) null).toCipher(), is(nullValue()));
+	}
+
+	@Test
+	public void testToCipherCharSequenceParametersString() {
+		assertThat(((String) null).toCipher(""), is(nullValue()));
+	}
+
+	@Test
+	public void testToCipherCharSequenceParametersProvider() {
+		assertThat(((String) null).toCipher((Provider) null), is(nullValue()));
+	}
+
+	@Test
+	public void testToKeyAgreementCharSequenceParameters() {
+		assertThat(((String) null).toKeyAgreement(), is(nullValue()));
+	}
+
+	@Test
+	public void testToKeyAgreementCharSequenceParametersString() {
+		assertThat(((String) null).toKeyAgreement(""), is(nullValue()));
+	}
+
+	@Test
+	public void testToKeyAgreementCharSequenceParametersProvider() {
+		assertThat(((String) null).toKeyAgreement((Provider) null), is(nullValue()));
+	}
+
+	@Test
+	public void testToKeyGeneratorCharSequenceParameters() {
+		assertThat(((String) null).toKeyGenerator(), is(nullValue()));
+	}
+
+	@Test
+	public void testToKeyGeneratorCharSequenceParametersString() {
+		assertThat(((String) null).toKeyGenerator(""), is(nullValue()));
+	}
+
+	@Test
+	public void testToKeyGeneratorCharSequenceParametersProvider() {
+		assertThat(((String) null).toKeyGenerator((Provider) null), is(nullValue()));
+	}
+
+	@Test
+	public void testToMACCharSequenceParameters() {
+		assertThat(((String) null).toMAC(), is(nullValue()));
+	}
+
+	@Test
+	public void testToMACCharSequenceParametersString() {
+		assertThat(((String) null).toMAC(""), is(nullValue()));
+	}
+
+	@Test
+	public void testToMACCharSequenceParametersProvider() {
+		assertThat(((String) null).toMAC((Provider) null), is(nullValue()));
+	}
+
+	@Test
+	public void testToSecretKeyFactoryCharSequenceParameters() {
+		assertThat(((String) null).toSecretKeyFactory(), is(nullValue()));
+	}
+
+	@Test
+	public void testToSecretKeyFactoryCharSequenceParametersString() {
+		assertThat(((String) null).toSecretKeyFactory(""), is(nullValue()));
+	}
+
+	@Test
+	public void testToSecretKeyFactoryCharSequenceParametersProvider() {
+		assertThat(((String) null).toSecretKeyFactory((Provider) null), is(nullValue()));
+	}
+
 }

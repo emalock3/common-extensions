@@ -40,6 +40,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import javax.crypto.Cipher;
+import javax.crypto.KeyAgreement;
+import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKeyFactory;
+
 import lombok.NonNull;
 import lombok.experimental.ExtensionMethod;
 
@@ -1330,5 +1337,255 @@ public final class StringExtensions {
 			return null;
 		}
 		return Charset.forName(cs.toString());
+	}
+	
+	/**
+	 * @param cs transformation
+	 * @return the Cipher
+	 * @throws IllegalArgumentException
+	 */
+	public static Cipher toCipher(CharSequence cs) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return Cipher.getInstance(cs.toString());
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs transformation
+	 * @param provider
+	 * @return the Cipher
+	 * @throws IllegalArgumentException
+	 */
+	public static Cipher toCipher(CharSequence cs, String provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return Cipher.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs transformation
+	 * @param provider
+	 * @return the Cipher
+	 * @throws IllegalArgumentException
+	 */
+	public static Cipher toCipher(CharSequence cs, Provider provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return Cipher.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @return the KeyAgreement
+	 * @throws IllegalArgumentException
+	 */
+	public static KeyAgreement toKeyAgreement(CharSequence cs) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return KeyAgreement.getInstance(cs.toString());
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the KeyAgreement
+	 * @throws IllegalArgumentException
+	 */
+	public static KeyAgreement toKeyAgreement(CharSequence cs, String provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return KeyAgreement.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the KeyAgreement
+	 * @throws IllegalArgumentException
+	 */
+	public static KeyAgreement toKeyAgreement(CharSequence cs, Provider provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return KeyAgreement.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @return the KeyGenerator
+	 * @throws IllegalArgumentException
+	 */
+	public static KeyGenerator toKeyGenerator(CharSequence cs) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return KeyGenerator.getInstance(cs.toString());
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the KeyGenerator
+	 * @throws IllegalArgumentException
+	 */
+	public static KeyGenerator toKeyGenerator(CharSequence cs, String provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return KeyGenerator.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the KeyGenerator
+	 * @throws IllegalArgumentException
+	 */
+	public static KeyGenerator toKeyGenerator(CharSequence cs, Provider provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return KeyGenerator.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @return the Mac
+	 * @throws IllegalArgumentException
+	 */
+	public static Mac toMAC(CharSequence cs) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return Mac.getInstance(cs.toString());
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the Mac
+	 * @throws IllegalArgumentException
+	 */
+	public static Mac toMAC(CharSequence cs, String provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return Mac.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the Mac
+	 * @throws IllegalArgumentException
+	 */
+	public static Mac toMAC(CharSequence cs, Provider provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return Mac.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @return the SecretKeyFactory
+	 * @throws IllegalArgumentException
+	 */
+	public static SecretKeyFactory toSecretKeyFactory(CharSequence cs) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return SecretKeyFactory.getInstance(cs.toString());
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the SecretKeyFactory
+	 * @throws IllegalArgumentException
+	 */
+	public static SecretKeyFactory toSecretKeyFactory(CharSequence cs, String provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return SecretKeyFactory.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * @param cs algorithm
+	 * @param provider
+	 * @return the SecretKeyFactory
+	 * @throws IllegalArgumentException
+	 */
+	public static SecretKeyFactory toSecretKeyFactory(CharSequence cs, Provider provider) throws IllegalArgumentException {
+		if (cs == null) {
+			return null;
+		}
+		try {
+			return SecretKeyFactory.getInstance(cs.toString(), provider);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 }
