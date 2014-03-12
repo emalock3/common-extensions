@@ -27,13 +27,13 @@ Add dependency and repository to pom.xml.
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.12.4</version>
+			<version>0.12.6</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.emalock3.common</groupId>
 			<artifactId>common-extensions</artifactId>
-			<version>0.0.3</version>
+			<version>0.1.0</version>
 		</dependency>
 		
 		...
