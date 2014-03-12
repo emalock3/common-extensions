@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.github.emalock3</groupId>
 		<artifactId>emalock3-parent</artifactId>
-		<version>1</version>
+		<version>2</version>
 	</parent>
 
 	<groupId>com.github.emalock.common</groupId>
 	<artifactId>common-extensions</artifactId>
-	<version>0.0.3</version>
+	<version>0.1.0</version>
 	<packaging>jar</packaging>
 
 	<name>Java Common Extensions</name>
