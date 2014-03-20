@@ -35,8 +35,15 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -48,10 +55,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKeyFactory;
 
 import lombok.NonNull;
-import lombok.experimental.ExtensionMethod;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +64,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Shinobu Aoki
  */
-@ExtensionMethod({ObjectExtensions.class})
 public final class StringExtensions {
 	
 	private static final Logger LOGGER = 
@@ -70,6 +73,7 @@ public final class StringExtensions {
 	}
 	
 	public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    public static final Optional<Charset> DEFAULT_CHARSET_OPT = Optional.of(DEFAULT_CHARSET);
 	
 	/**
 	 * @param cs
@@ -89,24 +93,21 @@ public final class StringExtensions {
 	 * @see String#format(String, Object...)
 	 */
 	public static String fmt(CharSequence cs, Object... args) {
-		if (cs == null) {
-			return null;
-		}
-		return String.format(cs.toString(), args);
+        return fmt(cs, Optional.empty(), args);
 	}
 	
 	/**
 	 * @param cs
-	 * @param l
+	 * @param lopt
 	 * @param args
 	 * @return the String
 	 * @see String#format(Locale, String, Object...)
 	 */
-	public static String fmt(CharSequence cs, Locale l, Object... args) {
+	public static String fmt(CharSequence cs, Optional<Locale> lopt, Object... args) {
 		if (cs == null) {
 			return null;
 		}
-		return String.format(l, cs.toString(), args);
+        return lopt.map(l -> String.format(l, cs.toString(), args)).orElse(String.format(cs.toString(), args));
 	}
 	
 	/**
@@ -116,21 +117,21 @@ public final class StringExtensions {
 	 * @see URLEncoder#encode(String, String)
 	 */
 	public static String encodeURL(CharSequence cs) {
-		return encodeURL(cs, DEFAULT_CHARSET);
+		return encodeURL(cs, DEFAULT_CHARSET_OPT);
 	}
 	
 	/**
 	 * @param cs
-	 * @param charset
+	 * @param charsetOpt
 	 * @return the encoded URL if encoding is needed; the unchanged URL otherwise.
 	 * @see URLEncoder#encode(String, String)
 	 */
-	public static String encodeURL(CharSequence cs, @NonNull Charset charset) {
+	public static String encodeURL(CharSequence cs, @NonNull Optional<Charset> charsetOpt) {
 		if (cs == null) {
 			return null;
 		}
 		try {
-			return URLEncoder.encode(cs.toString(), charset.name());
+			return URLEncoder.encode(cs.toString(), charsetOpt.orElse(DEFAULT_CHARSET).name());
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -143,21 +144,21 @@ public final class StringExtensions {
 	 * @see URLDecoder#decode(String, String)
 	 */
 	public static String decodeURL(CharSequence cs) {
-		return decodeURL(cs, DEFAULT_CHARSET);
+		return decodeURL(cs, DEFAULT_CHARSET_OPT);
 	}
 	
 	/**
 	 * @param cs
-	 * @param charset
+	 * @param charsetOpt
 	 * @return the decoded URL
 	 * @see URLDecoder#decode(String, String)
 	 */
-	public static String decodeURL(CharSequence cs, @NonNull Charset charset) {
+	public static String decodeURL(CharSequence cs, @NonNull Optional<Charset> charsetOpt) {
 		if (cs == null) {
 			return null;
 		}
 		try {
-			return URLDecoder.decode(cs.toString(), charset.name());
+			return URLDecoder.decode(cs.toString(), charsetOpt.orElse(DEFAULT_CHARSET).name());
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -168,19 +169,19 @@ public final class StringExtensions {
 	 * @return the InputStream
 	 */
 	public static InputStream toInputStream(CharSequence cs) {
-		return toInputStream(cs, DEFAULT_CHARSET);
+		return toInputStream(cs, DEFAULT_CHARSET_OPT);
 	}
 	
 	/**
 	 * @param cs the CharSequence to convert
-	 * @param charset for converting byte array from CharSequence
+	 * @param charsetOpt for converting byte array from CharSequence
 	 * @return the InputStream
 	 */
-	public static InputStream toInputStream(CharSequence cs, @NonNull Charset charset) {
+	public static InputStream toInputStream(CharSequence cs, @NonNull Optional<Charset> charsetOpt) {
 		if (cs == null) {
 			return null;
 		}
-		return new ByteArrayInputStream(cs.toString().getBytes(charset));
+		return new ByteArrayInputStream(cs.toString().getBytes(charsetOpt.orElse(DEFAULT_CHARSET)));
 	}
 	
 	/**
@@ -741,56 +742,85 @@ public final class StringExtensions {
 	/**
 	 * @param cs
 	 * @return the parsed date-time
-	 * @throws IllegalArgumentException if the text to parse is invalid
-	 * @see DateTime#parse(String)
+	 * @throws DateTimeParseException if the text to parse is invalid
+	 * @see LocalDateTime#parse(String)
 	 */
-	public static DateTime toDateTime(CharSequence cs) throws IllegalArgumentException {
+	public static LocalDateTime toLocalDateTime(CharSequence cs) throws DateTimeParseException {
 		if (cs == null) {
 			return null;
 		}
-		return DateTime.parse(cs.toString());
+		return LocalDateTime.parse(cs);
 	}
 	
 	/**
 	 * @param cs
 	 * @param pattern
 	 * @return the parsed date-time
-	 * @throws IllegalArgumentException if the pattern is invalid or the text to parse is invalid
-	 * @see DateTime#parse(String, org.joda.time.format.DateTimeFormatter)
+	 * @throws DateTimeParseException if the text to parse is invalid
+	 * @see LocalDateTime#parse(String, DateTimeFormatter)
 	 */
-	public static DateTime toDateTime(CharSequence cs, String pattern) throws IllegalArgumentException {
+	public static LocalDateTime toLocalDateTime(CharSequence cs, String pattern) throws DateTimeParseException {
 		if (cs == null) {
 			return null;
 		}
-		return DateTime.parse(cs.toString(), DateTimeFormat.forPattern(pattern));
+		return LocalDateTime.parse(cs, DateTimeFormatter.ofPattern(pattern));
 	}
 	
 	/**
 	 * @param cs
 	 * @return the parsed date
-	 * @throws IllegalArgumentException if the text to parse is invalid
-	 * @see DateTime#parse(String)
+	 * @throws DateTimeParseException if the text to parse is invalid
+	 * @see OffsetDateTime#parse(String)
 	 */
-	public static Date toDate(CharSequence cs) throws IllegalArgumentException {
+	public static Date toDate(CharSequence cs) throws DateTimeParseException {
 		if (cs == null) {
 			return null;
 		}
-		return DateTime.parse(cs.toString()).toDate();
+        return Date.from(toLocalDateTime(cs).toInstant(ZoneOffset.UTC));
 	}
 	
 	/**
 	 * @param cs
 	 * @param pattern
 	 * @return the parsed date
-	 * @throws IllegalArgumentException if the pattern is invalid or the text to parse is invalid
-	 * @see DateTime#parse(String, org.joda.time.format.DateTimeFormatter)
+	 * @throws DateTimeParseException if the text to parse is invalid
+	 * @see OffsetDateTime#parse(String, DateTimeFormatter)
 	 */
 	public static Date toDate(CharSequence cs, String pattern) throws IllegalArgumentException {
 		if (cs == null) {
 			return null;
 		}
-		return DateTime.parse(cs.toString(), DateTimeFormat.forPattern(pattern)).toDate();
+        return Date.from(toLocalDateTime(cs, pattern).toInstant(ZoneOffset.UTC));
 	}
+    
+	/**
+	 * @param cs
+     * @param zo
+	 * @return the parsed date
+	 * @throws DateTimeParseException if the text to parse is invalid
+	 * @see OffsetDateTime#parse(String)
+	 */
+    public static Date toDate(CharSequence cs, ZoneOffset zo) throws IllegalArgumentException {
+        if (cs == null) {
+            return null;
+        }
+        return Date.from(toLocalDateTime(cs).toInstant(zo));
+    }
+    
+	/**
+	 * @param cs
+     * @param pattern
+     * @param zo
+	 * @return the parsed date
+	 * @throws DateTimeParseException if the text to parse is invalid
+	 * @see OffsetDateTime#parse(String)
+	 */
+    public static Date toDate(CharSequence cs, String pattern, ZoneOffset zo) throws IllegalArgumentException {
+        if (cs == null) {
+            return null;
+        }
+        return Date.from(toLocalDateTime(cs, pattern).toInstant(zo));
+    }
 	
 	/**
 	 * @param cs
@@ -817,6 +847,33 @@ public final class StringExtensions {
 		return new SimpleDateFormat(cs.toString(), locale);
 	}
 	
+	/**
+	 * @param cs
+	 * @return the DateFormat
+     * @throws IllegalArgumentException if the pattern is invalid
+	 * @see DateTimeFormatter#ofPattern(java.lang.String) 
+	 */
+    public static DateTimeFormatter toDateTimeFormatter(CharSequence cs) throws IllegalArgumentException {
+        if (cs == null) {
+            return null;
+        }
+        return DateTimeFormatter.ofPattern(cs.toString());
+    }
+	
+	/**
+	 * @param cs
+	 * @param locale
+	 * @return the DateFormat
+     * @throws IllegalArgumentException if the pattern is invalid
+	 * @see DateTimeFormatter#ofPattern(java.lang.String, java.util.Locale)  
+	 */
+    public static DateTimeFormatter toDateTimeFormatter(CharSequence cs, @NonNull Locale locale) throws IllegalArgumentException {
+        if (cs == null) {
+            return null;
+        }
+        return DateTimeFormatter.ofPattern(cs.toString(), locale);
+    }
+    
 	/**
 	 * @param language
 	 * @return the Locale

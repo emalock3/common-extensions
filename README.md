@@ -17,7 +17,7 @@ When project is using `@ExtensionMethod` annotation of Lombok they can be used a
 
 ### Requirements
 
-- Java 7 (JDK 1.7) or higher. Set environment variable `JAVA_HOME` to point to the root directory of JDK.
+- Java 8 (JDK 1.8) or above. Set environment variable `JAVA_HOME` to point to the root directory of JDK.
 - [Maven 3.x](http://maven.apache.org/)
 
 ### Maven Repository
@@ -33,7 +33,7 @@ Add dependency and repository to pom.xml.
 		<dependency>
 			<groupId>com.github.emalock3.common</groupId>
 			<artifactId>common-extensions</artifactId>
-			<version>0.1.0</version>
+			<version>0.9.0</version>
 		</dependency>
 		
 		...
