@@ -19,7 +19,6 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Policy;
-import java.security.Provider;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -416,7 +415,7 @@ public class StringExtensionsTest {
 
     @Test
     public void testToByteBufferCharSequenceCharset() {
-        Charset utf8 = Charset.forName("UTF-8");
+        Optional<Charset> utf8 = Optional.of(Charset.forName("UTF-8"));
         assertThat(((String) null).toByteBuffer(utf8), is(nullValue()));
         assertThat("".toByteBuffer(utf8).limit(), is(0));
         assertThat("hoge".toByteBuffer(utf8).limit(), is(4));
@@ -439,10 +438,10 @@ public class StringExtensionsTest {
 
     @Test(expected = DateTimeParseException.class)
     public void testToDateTimeCharSequenceString() {
-        assertThat(((String) null).toLocalDateTime("yyyyMMdd"), is(nullValue()));
-        assertThat("20140311".toLocalDateTime("yyyyMMdd"), is(LocalDateTime.parse("2014-03-11")));
-        assertThat("2014/03/11 14:32:14".toLocalDateTime("yyyy/MM/dd HH:mm:ss"), is(LocalDateTime.parse("2014-03-11T14:32:14")));
-        "hoge".toLocalDateTime("yyyy-MM-dd");
+        assertThat(((String) null).toLocalDateTime(Optional.of("yyyyMMdd")), is(nullValue()));
+        assertThat("20140311".toLocalDateTime(Optional.of("yyyyMMdd")), is(LocalDateTime.parse("2014-03-11")));
+        assertThat("2014/03/11 14:32:14".toLocalDateTime(Optional.of("yyyy/MM/dd HH:mm:ss")), is(LocalDateTime.parse("2014-03-11T14:32:14")));
+        "hoge".toLocalDateTime(Optional.of("yyyy-MM-dd"));
     }
 
     @Test(expected = DateTimeParseException.class)
@@ -455,10 +454,10 @@ public class StringExtensionsTest {
 
     @Test(expected = DateTimeParseException.class)
     public void testToDateCharSequenceString() {
-        assertThat(((String) null).toDate("yyyyMMdd"), is(nullValue()));
+        assertThat(((String) null).toDate(Optional.of("yyyyMMdd")), is(nullValue()));
 //		assertThat("20140311".toDate("yyyyMMdd"), is(new Date(OffsetDateTime.parse("2014-03-11").toInstant().toEpochMilli())));
-        assertThat("2014/03/11 14:32:14".toDate("yyyy/MM/dd HH:mm:ss"), is(Date.from(LocalDateTime.parse("2014-03-11T14:32:14").toInstant(ZoneOffset.UTC))));
-        "hoge".toDate("yyyy-MM-dd");
+        assertThat("2014/03/11 14:32:14".toDate(Optional.of("yyyy/MM/dd HH:mm:ss")), is(Date.from(LocalDateTime.parse("2014-03-11T14:32:14").toInstant(ZoneOffset.UTC))));
+        "hoge".toDate(Optional.of("yyyy-MM-dd"));
     }
 
     @Test
@@ -469,8 +468,8 @@ public class StringExtensionsTest {
 
     @Test
     public void testToDateFormatCharSequenceLocale() {
-        assertThat(((String) null).toDateFormat(Locale.US), is(nullValue()));
-        assertThat("yyyy".toDateFormat(Locale.US), is((DateFormat) new SimpleDateFormat("yyyy", Locale.US)));
+        assertThat(((String) null).toDateFormat(Optional.of(Locale.US)), is(nullValue()));
+        assertThat("yyyy".toDateFormat(Optional.of(Locale.US)), is((DateFormat) new SimpleDateFormat("yyyy", Locale.US)));
     }
 
     @Test
@@ -481,14 +480,14 @@ public class StringExtensionsTest {
 
     @Test
     public void testToLocaleCharSequenceString() {
-        assertThat(((String) null).toLocale("US"), is(nullValue()));
-        assertThat("ENGLISH".toLocale("US"), is(new Locale("ENGLISH", "US")));
+        assertThat(((String) null).toLocale(Optional.of("US")), is(nullValue()));
+        assertThat("ENGLISH".toLocale(Optional.of("US")), is(new Locale("ENGLISH", "US")));
     }
 
     @Test
     public void testToLocaleCharSequenceStringString() {
-        assertThat(((String) null).toLocale("US", ""), is(nullValue()));
-        assertThat("ENGLISH".toLocale("US", ""), is(new Locale("ENGLISH", "US", "")));
+        assertThat(((String) null).toLocale(Optional.of("US"), Optional.of("")), is(nullValue()));
+        assertThat("ENGLISH".toLocale(Optional.of("US"), Optional.of("")), is(new Locale("ENGLISH", "US", "")));
     }
 
     @Test
@@ -506,13 +505,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToMessageDigestCharSequenceString() {
-        assertThat(((String) null).toMessageDigest(""), is(nullValue()));
-    }
-
-    @Test
     public void testToMessageDigestCharSequenceProvider() {
-        assertThat(((String) null).toMessageDigest((Provider) null), is(nullValue()));
+        assertThat(((String) null).toMessageDigest(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -521,13 +515,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToKeyFactoryCharSequenceString() {
-        assertThat(((String) null).toKeyFactory(""), is(nullValue()));
-    }
-
-    @Test
     public void testToKeyFactoryCharSequenceProvider() {
-        assertThat(((String) null).toKeyFactory((Provider) null), is(nullValue()));
+        assertThat(((String) null).toKeyFactory(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -536,13 +525,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToKeyStoreCharSequenceString() {
-        assertThat(((String) null).toKeyStore(""), is(nullValue()));
-    }
-
-    @Test
     public void testToKeyStoreCharSequenceProvider() {
-        assertThat(((String) null).toKeyStore((Provider) null), is(nullValue()));
+        assertThat(((String) null).toKeyStore(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -551,13 +535,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToSignatureCharSequenceString() {
-        assertThat(((String) null).toSignature(""), is(nullValue()));
-    }
-
-    @Test
     public void testToSignatureCharSequenceProvider() {
-        assertThat(((String) null).toSignature((Provider) null), is(nullValue()));
+        assertThat(((String) null).toSignature(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -566,13 +545,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToSecureRandomCharSequenceString() {
-        assertThat(((String) null).toSecureRandom(""), is(nullValue()));
-    }
-
-    @Test
     public void testToSecureRandomCharSequenceProvider() {
-        assertThat(((String) null).toSecureRandom((Provider) null), is(nullValue()));
+        assertThat(((String) null).toSecureRandom(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -581,13 +555,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToKeyPairGeneratorCharSequenceString() {
-        assertThat(((String) null).toKeyPairGenerator(""), is(nullValue()));
-    }
-
-    @Test
     public void testToKeyPairGeneratorCharSequenceProvider() {
-        assertThat(((String) null).toKeyPairGenerator((Provider) null), is(nullValue()));
+        assertThat(((String) null).toKeyPairGenerator(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -596,13 +565,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToAlgorithmParametersCharSequenceString() {
-        assertThat(((String) null).toAlgorithmParameters(""), is(nullValue()));
-    }
-
-    @Test
     public void testToAlgorithmParametersCharSequenceProvider() {
-        assertThat(((String) null).toAlgorithmParameters((Provider) null), is(nullValue()));
+        assertThat(((String) null).toAlgorithmParameters(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -611,13 +575,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToAlgorithmParameterGeneratorCharSequenceString() {
-        assertThat(((String) null).toAlgorithmParameterGenerator(""), is(nullValue()));
-    }
-
-    @Test
     public void testToAlgorithmParameterGeneratorCharSequenceProvider() {
-        assertThat(((String) null).toAlgorithmParameterGenerator((Provider) null), is(nullValue()));
+        assertThat(((String) null).toAlgorithmParameterGenerator(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -626,13 +585,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToPolicyCharSequenceParametersString() {
-        assertThat(((String) null).toPolicy((Policy.Parameters) null, ""), is(nullValue()));
-    }
-
-    @Test
     public void testToPolicyCharSequenceParametersProvider() {
-        assertThat(((String) null).toPolicy((Policy.Parameters) null, (Provider) null), is(nullValue()));
+        assertThat(((String) null).toPolicy((Policy.Parameters) null, Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -647,13 +601,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToCipherCharSequenceParametersString() {
-        assertThat(((String) null).toCipher(""), is(nullValue()));
-    }
-
-    @Test
     public void testToCipherCharSequenceParametersProvider() {
-        assertThat(((String) null).toCipher((Provider) null), is(nullValue()));
+        assertThat(((String) null).toCipher(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -662,13 +611,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToKeyAgreementCharSequenceParametersString() {
-        assertThat(((String) null).toKeyAgreement(""), is(nullValue()));
-    }
-
-    @Test
     public void testToKeyAgreementCharSequenceParametersProvider() {
-        assertThat(((String) null).toKeyAgreement((Provider) null), is(nullValue()));
+        assertThat(((String) null).toKeyAgreement(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -677,13 +621,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToKeyGeneratorCharSequenceParametersString() {
-        assertThat(((String) null).toKeyGenerator(""), is(nullValue()));
-    }
-
-    @Test
     public void testToKeyGeneratorCharSequenceParametersProvider() {
-        assertThat(((String) null).toKeyGenerator((Provider) null), is(nullValue()));
+        assertThat(((String) null).toKeyGenerator(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -692,13 +631,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToMACCharSequenceParametersString() {
-        assertThat(((String) null).toMAC(""), is(nullValue()));
-    }
-
-    @Test
     public void testToMACCharSequenceParametersProvider() {
-        assertThat(((String) null).toMAC((Provider) null), is(nullValue()));
+        assertThat(((String) null).toMAC(Optional.empty()), is(nullValue()));
     }
 
     @Test
@@ -707,13 +641,8 @@ public class StringExtensionsTest {
     }
 
     @Test
-    public void testToSecretKeyFactoryCharSequenceParametersString() {
-        assertThat(((String) null).toSecretKeyFactory(""), is(nullValue()));
-    }
-
-    @Test
     public void testToSecretKeyFactoryCharSequenceParametersProvider() {
-        assertThat(((String) null).toSecretKeyFactory((Provider) null), is(nullValue()));
+        assertThat(((String) null).toSecretKeyFactory(Optional.empty()), is(nullValue()));
     }
 
 }

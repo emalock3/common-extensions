@@ -28,10 +28,10 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Policy;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.Signature;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -705,20 +705,20 @@ public final class StringExtensions {
      * @see ByteBuffer#wrap(byte[])
      */
     public static ByteBuffer toByteBuffer(CharSequence cs) {
-        return toByteBuffer(cs, DEFAULT_CHARSET);
+        return toByteBuffer(cs, DEFAULT_CHARSET_OPT);
     }
 
     /**
      * @param cs the CharSequence
-     * @param charset
+     * @param charsetOpt
      * @return the ByteBuffer
      * @see ByteBuffer#wrap(byte[])
      */
-    public static ByteBuffer toByteBuffer(CharSequence cs, Charset charset) {
+    public static ByteBuffer toByteBuffer(CharSequence cs, @NonNull Optional<Charset> charsetOpt) {
         if (cs == null) {
             return null;
         }
-        return ByteBuffer.wrap(cs.toString().getBytes(charset));
+        return ByteBuffer.wrap(cs.toString().getBytes(charsetOpt.orElse(DEFAULT_CHARSET)));
     }
 
     /**
@@ -745,24 +745,22 @@ public final class StringExtensions {
      * @see LocalDateTime#parse(java.lang.CharSequence)
      */
     public static LocalDateTime toLocalDateTime(CharSequence cs) throws DateTimeParseException {
-        if (cs == null) {
-            return null;
-        }
-        return LocalDateTime.parse(cs);
+        return toLocalDateTime(cs, Optional.empty());
     }
 
     /**
      * @param cs the CharSequence
-     * @param pattern
+     * @param patternOpt
      * @return the parsed date-time
      * @throws DateTimeParseException if the text to parse is invalid
      * @see LocalDateTime#parse(java.lang.CharSequence, java.time.format.DateTimeFormatter)
      */
-    public static LocalDateTime toLocalDateTime(CharSequence cs, String pattern) throws DateTimeParseException {
+    public static LocalDateTime toLocalDateTime(CharSequence cs, @NonNull Optional<String> patternOpt) throws DateTimeParseException {
         if (cs == null) {
             return null;
         }
-        return LocalDateTime.parse(cs, DateTimeFormatter.ofPattern(pattern));
+        return patternOpt.map(pattern -> LocalDateTime.parse(cs, DateTimeFormatter.ofPattern(pattern)))
+                .orElse(LocalDateTime.parse(cs));
     }
 
     /**
@@ -772,53 +770,34 @@ public final class StringExtensions {
      * @see OffsetDateTime#parse(java.lang.CharSequence)
      */
     public static Date toDate(CharSequence cs) throws DateTimeParseException {
-        if (cs == null) {
-            return null;
-        }
-        return Date.from(toLocalDateTime(cs).toInstant(ZoneOffset.UTC));
+        return toDate(cs, Optional.empty(), Optional.empty());
     }
 
     /**
      * @param cs the CharSequence
-     * @param pattern
+     * @param patternOpt
      * @return the parsed date
      * @throws DateTimeParseException if the text to parse is invalid
      * @see OffsetDateTime#parse(java.lang.CharSequence, java.time.format.DateTimeFormatter)
      */
-    public static Date toDate(CharSequence cs, String pattern) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        return Date.from(toLocalDateTime(cs, pattern).toInstant(ZoneOffset.UTC));
+    public static Date toDate(CharSequence cs, @NonNull Optional<String> patternOpt) throws IllegalArgumentException {
+        return toDate(cs, patternOpt, Optional.empty());
     }
 
     /**
      * @param cs the CharSequence
-     * @param zo
+     * @param patternOpt
+     * @param zoOpt
      * @return the parsed date
      * @throws DateTimeParseException if the text to parse is invalid
      * @see OffsetDateTime#parse(java.lang.CharSequence)
      */
-    public static Date toDate(CharSequence cs, ZoneOffset zo) throws IllegalArgumentException {
+    public static Date toDate(CharSequence cs, @NonNull Optional<String> patternOpt, @NonNull Optional<ZoneOffset> zoOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
-        return Date.from(toLocalDateTime(cs).toInstant(zo));
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param pattern
-     * @param zo
-     * @return the parsed date
-     * @throws DateTimeParseException if the text to parse is invalid
-     * @see OffsetDateTime#parse(java.lang.CharSequence)
-     */
-    public static Date toDate(CharSequence cs, String pattern, ZoneOffset zo) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        return Date.from(toLocalDateTime(cs, pattern).toInstant(zo));
+        ZoneOffset zo = zoOpt.orElse(ZoneOffset.UTC);
+        return Date.from(toLocalDateTime(cs, patternOpt).toInstant(zo));
     }
 
     /**
@@ -827,23 +806,21 @@ public final class StringExtensions {
      * @see SimpleDateFormat#SimpleDateFormat(java.lang.String)
      */
     public static DateFormat toDateFormat(CharSequence cs) {
-        if (cs == null) {
-            return null;
-        }
-        return new SimpleDateFormat(cs.toString());
+        return toDateFormat(cs, Optional.empty());
     }
 
     /**
      * @param cs the CharSequence
-     * @param locale
+     * @param localeOpt
      * @return the DateFormat
      * @see SimpleDateFormat#SimpleDateFormat(java.lang.String, java.util.Locale)
      */
-    public static DateFormat toDateFormat(CharSequence cs, @NonNull Locale locale) {
+    public static DateFormat toDateFormat(CharSequence cs, @NonNull Optional<Locale> localeOpt) {
         if (cs == null) {
             return null;
         }
-        return new SimpleDateFormat(cs.toString(), locale);
+        return localeOpt.map(locale -> new SimpleDateFormat(cs.toString(), locale))
+                .orElse(new SimpleDateFormat(cs.toString()));
     }
 
     /**
@@ -853,24 +830,22 @@ public final class StringExtensions {
      * @see DateTimeFormatter#ofPattern(java.lang.String)
      */
     public static DateTimeFormatter toDateTimeFormatter(CharSequence cs) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        return DateTimeFormatter.ofPattern(cs.toString());
+        return toDateTimeFormatter(cs, Optional.empty());
     }
 
     /**
      * @param cs the CharSequence
-     * @param locale
+     * @param localeOpt
      * @return the DateFormat
      * @throws IllegalArgumentException if the pattern is invalid
      * @see DateTimeFormatter#ofPattern(java.lang.String, java.util.Locale)
      */
-    public static DateTimeFormatter toDateTimeFormatter(CharSequence cs, @NonNull Locale locale) throws IllegalArgumentException {
+    public static DateTimeFormatter toDateTimeFormatter(CharSequence cs, @NonNull Optional<Locale> localeOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
-        return DateTimeFormatter.ofPattern(cs.toString(), locale);
+        return localeOpt.map(locale -> DateTimeFormatter.ofPattern(cs.toString(), locale))
+                .orElse(DateTimeFormatter.ofPattern(cs.toString()));
     }
 
     /**
@@ -879,37 +854,34 @@ public final class StringExtensions {
      * @see Locale#Locale(String)
      */
     public static Locale toLocale(CharSequence language) {
-        if (language == null) {
-            return null;
-        }
-        return new Locale(language.toString());
+        return toLocale(language, Optional.empty(), Optional.empty());
     }
 
     /**
      * @param language
-     * @param country
+     * @param countryOpt
      * @return the Locale
      * @see Locale#Locale(String, String)
      */
-    public static Locale toLocale(CharSequence language, String country) {
-        if (language == null || country == null) {
-            return null;
-        }
-        return new Locale(language.toString(), country);
+    public static Locale toLocale(CharSequence language, @NonNull Optional<String> countryOpt) {
+        return toLocale(language, countryOpt, Optional.empty());
     }
 
     /**
      * @param language
-     * @param country
-     * @param variant
+     * @param countryOpt
+     * @param variantOpt
      * @return the Locale
      * @see Locale#Locale(String, String, String)
      */
-    public static Locale toLocale(CharSequence language, String country, String variant) {
-        if (language == null || country == null || variant == null) {
+    public static Locale toLocale(CharSequence language, @NonNull Optional<String> countryOpt, @NonNull Optional<String> variantOpt) {
+        if (language == null) {
             return null;
         }
-        return new Locale(language.toString(), country, variant);
+        return countryOpt.map(country -> 
+                variantOpt.map(variant -> new Locale(language.toString(), country, variant))
+                .orElse(new Locale(language.toString(), country)))
+                .orElse(new Locale(language.toString()));
     }
 
     /**
@@ -924,6 +896,14 @@ public final class StringExtensions {
         return TimeZone.getTimeZone(cs.toString());
     }
 
+    public static Optional<Provider> toSecurityProvider(String name) {
+        if (name == null) {
+            return Optional.empty();
+        }
+        Provider p = Security.getProvider(name);
+        return p != null ? Optional.of(p) : Optional.empty();
+    }
+    
     /**
      * @param algorithm
      * @return the MessageDigest
@@ -931,47 +911,25 @@ public final class StringExtensions {
      * @see MessageDigest#getInstance(String)
      */
     public static MessageDigest toMessageDigest(CharSequence algorithm) throws IllegalArgumentException {
-        if (algorithm == null) {
-            return null;
-        }
-        try {
-            return MessageDigest.getInstance(algorithm.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return toMessageDigest(algorithm, Optional.empty());
     }
 
     /**
      * @param algorithm
-     * @param provider
-     * @return the MessageDigest
-     * @throws IllegalArgumentException
-     * @see MessageDigest#getInstance(String, String)
-     */
-    public static MessageDigest toMessageDigest(CharSequence algorithm, String provider) throws IllegalArgumentException {
-        if (algorithm == null) {
-            return null;
-        }
-        try {
-            return MessageDigest.getInstance(algorithm.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param algorithm
-     * @param provider
+     * @param providerOpt
      * @return the MessageDigest
      * @throws IllegalArgumentException
      * @see MessageDigest#getInstance(String, Provider)
      */
-    public static MessageDigest toMessageDigest(CharSequence algorithm, Provider provider) throws IllegalArgumentException {
+    public static MessageDigest toMessageDigest(CharSequence algorithm, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (algorithm == null) {
             return null;
         }
         try {
-            return MessageDigest.getInstance(algorithm.toString(), provider);
+            if (providerOpt.isPresent()) {
+                return MessageDigest.getInstance(algorithm.toString(), providerOpt.get());
+            }
+            return MessageDigest.getInstance(algorithm.toString());
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -984,47 +942,25 @@ public final class StringExtensions {
      * @see KeyFactory#getInstance(String)
      */
     public static KeyFactory toKeyFactory(CharSequence algorithm) throws IllegalArgumentException {
-        if (algorithm == null) {
-            return null;
-        }
-        try {
-            return KeyFactory.getInstance(algorithm.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return toKeyFactory(algorithm, Optional.empty());
     }
 
     /**
      * @param algorithm
-     * @param provider
-     * @return the KeyFactory
-     * @throws IllegalArgumentException
-     * @see KeyFactory#getInstance(String, String)
-     */
-    public static KeyFactory toKeyFactory(CharSequence algorithm, String provider) throws IllegalArgumentException {
-        if (algorithm == null) {
-            return null;
-        }
-        try {
-            return KeyFactory.getInstance(algorithm.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param algorithm
-     * @param provider
+     * @param providerOpt
      * @return the KeyFactory
      * @throws IllegalArgumentException
      * @see KeyFactory#getInstance(String, Provider)
      */
-    public static KeyFactory toKeyFactory(CharSequence algorithm, Provider provider) throws IllegalArgumentException {
+    public static KeyFactory toKeyFactory(CharSequence algorithm, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (algorithm == null) {
             return null;
         }
         try {
-            return KeyFactory.getInstance(algorithm.toString(), provider);
+            if (providerOpt.isPresent()) {
+                return KeyFactory.getInstance(algorithm.toString(), providerOpt.get());
+            }
+            return KeyFactory.getInstance(algorithm.toString());
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1036,45 +972,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static KeyStore toKeyStore(CharSequence cs) throws IllegalArgumentException {
+        return toKeyStore(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs the CharSequence
+     * @param providerOpt
+     * @return the KeyStore
+     * @throws IllegalArgumentException
+     */
+    public static KeyStore toKeyStore(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return KeyStore.getInstance(cs.toString(), providerOpt.get());
+            }
             return KeyStore.getInstance(cs.toString());
-        } catch (KeyStoreException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the KeyStore
-     * @throws IllegalArgumentException
-     */
-    public static KeyStore toKeyStore(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyStore.getInstance(cs.toString(), provider);
-        } catch (KeyStoreException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the KeyStore
-     * @throws IllegalArgumentException
-     */
-    public static KeyStore toKeyStore(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyStore.getInstance(cs.toString(), provider);
         } catch (KeyStoreException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1086,45 +1001,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static Signature toSignature(CharSequence cs) throws IllegalArgumentException {
+        return toSignature(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs the CharSequence
+     * @param providerOpt
+     * @return the Signature
+     * @throws IllegalArgumentException
+     */
+    public static Signature toSignature(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return Signature.getInstance(cs.toString(), providerOpt.get());
+            }
             return Signature.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the Signature
-     * @throws IllegalArgumentException
-     */
-    public static Signature toSignature(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Signature.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the Signature
-     * @throws IllegalArgumentException
-     */
-    public static Signature toSignature(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Signature.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1136,45 +1030,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static SecureRandom toSecureRandom(CharSequence cs) throws IllegalArgumentException {
+        return toSecureRandom(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs the CharSequence
+     * @param providerOpt
+     * @return the SecureRandom
+     * @throws IllegalArgumentException
+     */
+    public static SecureRandom toSecureRandom(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return SecureRandom.getInstance(cs.toString(), providerOpt.get());
+            }
             return SecureRandom.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the SecureRandom
-     * @throws IllegalArgumentException
-     */
-    public static SecureRandom toSecureRandom(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return SecureRandom.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the SecureRandom
-     * @throws IllegalArgumentException
-     */
-    public static SecureRandom toSecureRandom(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return SecureRandom.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1186,45 +1059,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static KeyPairGenerator toKeyPairGenerator(CharSequence cs) throws IllegalArgumentException {
+        return toKeyPairGenerator(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs the CharSequence
+     * @param providerOpt
+     * @return the KeyPairGenerator
+     * @throws IllegalArgumentException
+     */
+    public static KeyPairGenerator toKeyPairGenerator(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return KeyPairGenerator.getInstance(cs.toString(), providerOpt.get());
+            }
             return KeyPairGenerator.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the KeyPairGenerator
-     * @throws IllegalArgumentException
-     */
-    public static KeyPairGenerator toKeyPairGenerator(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyPairGenerator.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the KeyPairGenerator
-     * @throws IllegalArgumentException
-     */
-    public static KeyPairGenerator toKeyPairGenerator(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyPairGenerator.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1236,45 +1088,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static AlgorithmParameters toAlgorithmParameters(CharSequence cs) throws IllegalArgumentException {
+        return toAlgorithmParameters(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs the CharSequence
+     * @param providerOpt
+     * @return the AlgorithmParameters
+     * @throws IllegalArgumentException
+     */
+    public static AlgorithmParameters toAlgorithmParameters(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return AlgorithmParameters.getInstance(cs.toString(), providerOpt.get());
+            }
             return AlgorithmParameters.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the AlgorithmParameters
-     * @throws IllegalArgumentException
-     */
-    public static AlgorithmParameters toAlgorithmParameters(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return AlgorithmParameters.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the AlgorithmParameters
-     * @throws IllegalArgumentException
-     */
-    public static AlgorithmParameters toAlgorithmParameters(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return AlgorithmParameters.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1286,45 +1117,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static AlgorithmParameterGenerator toAlgorithmParameterGenerator(CharSequence cs) throws IllegalArgumentException {
+        return toAlgorithmParameterGenerator(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs the CharSequence
+     * @param providerOpt
+     * @return the AlgorithmParameterGenerator
+     * @throws IllegalArgumentException
+     */
+    public static AlgorithmParameterGenerator toAlgorithmParameterGenerator(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return AlgorithmParameterGenerator.getInstance(cs.toString(), providerOpt.get());
+            }
             return AlgorithmParameterGenerator.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the AlgorithmParameterGenerator
-     * @throws IllegalArgumentException
-     */
-    public static AlgorithmParameterGenerator toAlgorithmParameterGenerator(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return AlgorithmParameterGenerator.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param provider
-     * @return the AlgorithmParameterGenerator
-     * @throws IllegalArgumentException
-     */
-    public static AlgorithmParameterGenerator toAlgorithmParameterGenerator(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return AlgorithmParameterGenerator.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1337,47 +1147,25 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static Policy toPolicy(CharSequence cs, Policy.Parameters params) throws IllegalArgumentException {
+        return toPolicy(cs, params, Optional.empty());
+    }
+
+    /**
+     * @param cs the CharSequence
+     * @param params
+     * @param providerOpt
+     * @return the Policy
+     * @throws IllegalArgumentException
+     */
+    public static Policy toPolicy(CharSequence cs, Policy.Parameters params, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return Policy.getInstance(cs.toString(), params, providerOpt.get());
+            }
             return Policy.getInstance(cs.toString(), params);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param params
-     * @param provider
-     * @return the Policy
-     * @throws IllegalArgumentException
-     */
-    public static Policy toPolicy(CharSequence cs, Policy.Parameters params, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Policy.getInstance(cs.toString(), params, provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs the CharSequence
-     * @param params
-     * @param provider
-     * @return the Policy
-     * @throws IllegalArgumentException
-     */
-    public static Policy toPolicy(CharSequence cs, Policy.Parameters params, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Policy.getInstance(cs.toString(), params, provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1402,45 +1190,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static Cipher toCipher(CharSequence cs) throws IllegalArgumentException {
+        return toCipher(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs transformation
+     * @param providerOpt
+     * @return the Cipher
+     * @throws IllegalArgumentException
+     */
+    public static Cipher toCipher(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return Cipher.getInstance(cs.toString(), providerOpt.get());
+            }
             return Cipher.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs transformation
-     * @param provider
-     * @return the Cipher
-     * @throws IllegalArgumentException
-     */
-    public static Cipher toCipher(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Cipher.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs transformation
-     * @param provider
-     * @return the Cipher
-     * @throws IllegalArgumentException
-     */
-    public static Cipher toCipher(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Cipher.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1452,45 +1219,23 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static KeyAgreement toKeyAgreement(CharSequence cs) throws IllegalArgumentException {
+        return toKeyAgreement(cs, Optional.empty());
+    }
+    /**
+     * @param cs algorithm
+     * @param providerOpt
+     * @return the KeyAgreement
+     * @throws IllegalArgumentException
+     */
+    public static KeyAgreement toKeyAgreement(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return KeyAgreement.getInstance(cs.toString(), providerOpt.get());
+            }
             return KeyAgreement.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the KeyAgreement
-     * @throws IllegalArgumentException
-     */
-    public static KeyAgreement toKeyAgreement(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyAgreement.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the KeyAgreement
-     * @throws IllegalArgumentException
-     */
-    public static KeyAgreement toKeyAgreement(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyAgreement.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1502,45 +1247,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static KeyGenerator toKeyGenerator(CharSequence cs) throws IllegalArgumentException {
+        return toKeyGenerator(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs algorithm
+     * @param providerOpt
+     * @return the KeyGenerator
+     * @throws IllegalArgumentException
+     */
+    public static KeyGenerator toKeyGenerator(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return KeyGenerator.getInstance(cs.toString(), providerOpt.get());
+            }
             return KeyGenerator.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the KeyGenerator
-     * @throws IllegalArgumentException
-     */
-    public static KeyGenerator toKeyGenerator(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyGenerator.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the KeyGenerator
-     * @throws IllegalArgumentException
-     */
-    public static KeyGenerator toKeyGenerator(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return KeyGenerator.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1552,45 +1276,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static Mac toMAC(CharSequence cs) throws IllegalArgumentException {
+        return toMAC(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs algorithm
+     * @param providerOpt
+     * @return the Mac
+     * @throws IllegalArgumentException
+     */
+    public static Mac toMAC(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return Mac.getInstance(cs.toString(), providerOpt.get());
+            }
             return Mac.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the Mac
-     * @throws IllegalArgumentException
-     */
-    public static Mac toMAC(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Mac.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the Mac
-     * @throws IllegalArgumentException
-     */
-    public static Mac toMAC(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return Mac.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1602,45 +1305,24 @@ public final class StringExtensions {
      * @throws IllegalArgumentException
      */
     public static SecretKeyFactory toSecretKeyFactory(CharSequence cs) throws IllegalArgumentException {
+        return toSecretKeyFactory(cs, Optional.empty());
+    }
+
+    /**
+     * @param cs algorithm
+     * @param providerOpt
+     * @return the SecretKeyFactory
+     * @throws IllegalArgumentException
+     */
+    public static SecretKeyFactory toSecretKeyFactory(CharSequence cs, @NonNull Optional<Provider> providerOpt) throws IllegalArgumentException {
         if (cs == null) {
             return null;
         }
         try {
+            if (providerOpt.isPresent()) {
+                return SecretKeyFactory.getInstance(cs.toString(), providerOpt.get());
+            }
             return SecretKeyFactory.getInstance(cs.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the SecretKeyFactory
-     * @throws IllegalArgumentException
-     */
-    public static SecretKeyFactory toSecretKeyFactory(CharSequence cs, String provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return SecretKeyFactory.getInstance(cs.toString(), provider);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @param cs algorithm
-     * @param provider
-     * @return the SecretKeyFactory
-     * @throws IllegalArgumentException
-     */
-    public static SecretKeyFactory toSecretKeyFactory(CharSequence cs, Provider provider) throws IllegalArgumentException {
-        if (cs == null) {
-            return null;
-        }
-        try {
-            return SecretKeyFactory.getInstance(cs.toString(), provider);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException(e);
         }
