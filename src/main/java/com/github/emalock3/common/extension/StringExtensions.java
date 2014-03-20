@@ -35,7 +35,6 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -76,7 +75,7 @@ public final class StringExtensions {
     public static final Optional<Charset> DEFAULT_CHARSET_OPT = Optional.of(DEFAULT_CHARSET);
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return cs.toString() when cs is not null, otherwise returns null.
 	 */
 	public static String s(CharSequence cs) {
@@ -87,7 +86,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param args
 	 * @return the String
 	 * @see String#format(String, Object...)
@@ -97,7 +96,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param lopt
 	 * @param args
 	 * @return the String
@@ -111,7 +110,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the encoded URL if encoding is needed; the unchanged URL otherwise.
 	 * @see #DEFAULT_CHARSET
 	 * @see URLEncoder#encode(String, String)
@@ -121,7 +120,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param charsetOpt
 	 * @return the encoded URL if encoding is needed; the unchanged URL otherwise.
 	 * @see URLEncoder#encode(String, String)
@@ -138,7 +137,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the decoded URL
 	 * @see #DEFAULT_CHARSET
 	 * @see URLDecoder#decode(String, String)
@@ -148,7 +147,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param charsetOpt
 	 * @return the decoded URL
 	 * @see URLDecoder#decode(String, String)
@@ -185,7 +184,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the Reader
 	 */
 	public static Reader toReader(CharSequence cs) {
@@ -196,7 +195,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the URL
 	 */
 	public static URL toURL(CharSequence cs) {
@@ -211,7 +210,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the URI
 	 */
 	public static URI toURI(CharSequence cs) {
@@ -226,7 +225,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the File
 	 */
 	public static File toFile(CharSequence cs) {
@@ -237,7 +236,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the Path
 	 */
 	public static Path toPath(CharSequence cs) {
@@ -248,7 +247,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the Pattern
 	 * @see Pattern#compile(String)
 	 */
@@ -257,7 +256,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param flags
 	 * @return the Pattern
 	 * @see Pattern#compile(String, int)
@@ -270,7 +269,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return byte
 	 * @see Byte#parseByte(String)
 	 */
@@ -279,7 +278,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return byte
 	 * @see Byte#parseByte(String, int)
@@ -292,7 +291,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @param def
 	 * @return byte
@@ -310,7 +309,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return byte
 	 * @see Byte#valueOf(String)
 	 */
@@ -319,7 +318,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return byte
 	 * @see Byte#valueOf(String, int)
@@ -341,7 +340,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return short
 	 * @see Short#parseShort(String)
 	 */
@@ -350,7 +349,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return short
 	 * @see Short#parseShort(String, int)
@@ -363,7 +362,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @param def
 	 * @return short
@@ -381,7 +380,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return Short
 	 * @see Short#valueOf(String)
 	 */
@@ -390,7 +389,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return Short
 	 * @see Short#valueOf(String, int)
@@ -411,7 +410,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return int
 	 * @see Integer#parseInt(String)
 	 */
@@ -420,7 +419,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return int
 	 * @see Integer#parseInt(String, int)
@@ -433,7 +432,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @param def
 	 * @return int
@@ -451,7 +450,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return Integer
 	 * @see Integer#valueOf(String)
 	 */
@@ -460,7 +459,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return Integer
 	 * @see Integer#valueOf(String, int)
@@ -481,7 +480,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return long
 	 * @see Long#parseLong(String)
 	 */
@@ -490,7 +489,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return long
 	 * @see Long#parseLong(String, int)
@@ -503,7 +502,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @param def
 	 * @return long
@@ -521,7 +520,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return Long
 	 * @see Long#valueOf(String)
 	 */
@@ -530,7 +529,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param radix
 	 * @return Long
 	 * @see Long#valueOf(String, int)
@@ -551,7 +550,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the BigInteger
 	 * @see BigInteger#BigInteger(String)
 	 */
@@ -571,7 +570,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return float
 	 * @see Float#parseFloat(String)
 	 */
@@ -583,7 +582,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param def
 	 * @return float
 	 * @see Float#parseFloat(String)
@@ -600,7 +599,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return Float
 	 * @see Float#valueOf(String)
 	 */
@@ -620,7 +619,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return double
 	 * @see Double#parseDouble(String)
 	 */
@@ -632,7 +631,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param def
 	 * @return double
 	 * @see Double#parseDouble(String)
@@ -649,7 +648,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return Double
 	 * @see Double#parseDouble(String)
 	 */
@@ -669,7 +668,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the BigDecimal
 	 * @see BigDecimal#BigDecimal(String)
 	 */
@@ -689,7 +688,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the CharBuffer
 	 * @see CharBuffer#wrap(CharSequence)
 	 */
@@ -701,7 +700,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the ByteBuffer
 	 * @see ByteBuffer#wrap(byte[])
 	 */
@@ -710,7 +709,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param charset
 	 * @return the ByteBuffer
 	 * @see ByteBuffer#wrap(byte[])
@@ -723,7 +722,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the InetAddress
 	 * @throws IllegalArgumentException If the given string is illegal
 	 * @see InetAddress#getByName(String)
@@ -740,10 +739,10 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the parsed date-time
 	 * @throws DateTimeParseException if the text to parse is invalid
-	 * @see LocalDateTime#parse(String)
+	 * @see LocalDateTime#parse(java.lang.CharSequence) 
 	 */
 	public static LocalDateTime toLocalDateTime(CharSequence cs) throws DateTimeParseException {
 		if (cs == null) {
@@ -753,11 +752,11 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param pattern
 	 * @return the parsed date-time
 	 * @throws DateTimeParseException if the text to parse is invalid
-	 * @see LocalDateTime#parse(String, DateTimeFormatter)
+	 * @see LocalDateTime#parse(java.lang.CharSequence, java.time.format.DateTimeFormatter) 
 	 */
 	public static LocalDateTime toLocalDateTime(CharSequence cs, String pattern) throws DateTimeParseException {
 		if (cs == null) {
@@ -767,10 +766,10 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the parsed date
 	 * @throws DateTimeParseException if the text to parse is invalid
-	 * @see OffsetDateTime#parse(String)
+	 * @see OffsetDateTime#parse(java.lang.CharSequence) 
 	 */
 	public static Date toDate(CharSequence cs) throws DateTimeParseException {
 		if (cs == null) {
@@ -780,11 +779,11 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param pattern
 	 * @return the parsed date
 	 * @throws DateTimeParseException if the text to parse is invalid
-	 * @see OffsetDateTime#parse(String, DateTimeFormatter)
+	 * @see OffsetDateTime#parse(java.lang.CharSequence, java.time.format.DateTimeFormatter) 
 	 */
 	public static Date toDate(CharSequence cs, String pattern) throws IllegalArgumentException {
 		if (cs == null) {
@@ -794,11 +793,11 @@ public final class StringExtensions {
 	}
     
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
      * @param zo
 	 * @return the parsed date
 	 * @throws DateTimeParseException if the text to parse is invalid
-	 * @see OffsetDateTime#parse(String)
+	 * @see OffsetDateTime#parse(java.lang.CharSequence) 
 	 */
     public static Date toDate(CharSequence cs, ZoneOffset zo) throws IllegalArgumentException {
         if (cs == null) {
@@ -808,12 +807,12 @@ public final class StringExtensions {
     }
     
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
      * @param pattern
      * @param zo
 	 * @return the parsed date
 	 * @throws DateTimeParseException if the text to parse is invalid
-	 * @see OffsetDateTime#parse(String)
+	 * @see OffsetDateTime#parse(java.lang.CharSequence) 
 	 */
     public static Date toDate(CharSequence cs, String pattern, ZoneOffset zo) throws IllegalArgumentException {
         if (cs == null) {
@@ -823,9 +822,9 @@ public final class StringExtensions {
     }
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the DateFormat
-	 * @see SimpleDateFormat#SimpleDateFormat(String)
+	 * @see SimpleDateFormat#SimpleDateFormat(java.lang.String) 
 	 */
 	public static DateFormat toDateFormat(CharSequence cs) {
 		if (cs == null) {
@@ -835,10 +834,10 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param locale
 	 * @return the DateFormat
-	 * @see SimpleDateFormat#SimpleDateFormat(String, Locale)
+	 * @see SimpleDateFormat#SimpleDateFormat(java.lang.String, java.util.Locale) 
 	 */
 	public static DateFormat toDateFormat(CharSequence cs, @NonNull Locale locale) {
 		if (cs == null) {
@@ -848,7 +847,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the DateFormat
      * @throws IllegalArgumentException if the pattern is invalid
 	 * @see DateTimeFormatter#ofPattern(java.lang.String) 
@@ -861,7 +860,7 @@ public final class StringExtensions {
     }
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param locale
 	 * @return the DateFormat
      * @throws IllegalArgumentException if the pattern is invalid
@@ -914,7 +913,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the TimeZone
 	 * @see TimeZone#getTimeZone(String)
 	 */
@@ -1032,7 +1031,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the KeyStore
 	 * @throws IllegalArgumentException
 	 */
@@ -1048,7 +1047,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the KeyStore
 	 * @throws IllegalArgumentException
@@ -1065,7 +1064,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the KeyStore
 	 * @throws IllegalArgumentException
@@ -1082,7 +1081,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the Signature
 	 * @throws IllegalArgumentException
 	 */
@@ -1098,7 +1097,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the Signature
 	 * @throws IllegalArgumentException
@@ -1115,7 +1114,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the Signature
 	 * @throws IllegalArgumentException
@@ -1132,7 +1131,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the SecureRandom
 	 * @throws IllegalArgumentException
 	 */
@@ -1148,7 +1147,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the SecureRandom
 	 * @throws IllegalArgumentException
@@ -1165,7 +1164,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the SecureRandom
 	 * @throws IllegalArgumentException
@@ -1182,7 +1181,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the KeyPairGenerator
 	 * @throws IllegalArgumentException
 	 */
@@ -1198,7 +1197,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the KeyPairGenerator
 	 * @throws IllegalArgumentException
@@ -1215,7 +1214,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the KeyPairGenerator
 	 * @throws IllegalArgumentException
@@ -1232,7 +1231,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the AlgorithmParameters
 	 * @throws IllegalArgumentException
 	 */
@@ -1248,7 +1247,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the AlgorithmParameters
 	 * @throws IllegalArgumentException
@@ -1265,7 +1264,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the AlgorithmParameters
 	 * @throws IllegalArgumentException
@@ -1282,7 +1281,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the AlgorithmParameterGenerator
 	 * @throws IllegalArgumentException
 	 */
@@ -1298,7 +1297,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the AlgorithmParameterGenerator
 	 * @throws IllegalArgumentException
@@ -1315,7 +1314,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the AlgorithmParameterGenerator
 	 * @throws IllegalArgumentException
@@ -1332,7 +1331,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param params
 	 * @return the Policy
 	 * @throws IllegalArgumentException
@@ -1349,7 +1348,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the Policy
 	 * @throws IllegalArgumentException
@@ -1366,7 +1365,7 @@ public final class StringExtensions {
 	}
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @param provider
 	 * @return the Policy
 	 * @throws IllegalArgumentException
@@ -1384,7 +1383,7 @@ public final class StringExtensions {
 	
 	
 	/**
-	 * @param cs
+	 * @param cs the CharSequence
 	 * @return the Charset
 	 * @throws IllegalArgumentException
 	 * @see Charset#forName(String)

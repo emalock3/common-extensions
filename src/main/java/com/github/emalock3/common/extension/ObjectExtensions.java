@@ -12,9 +12,9 @@ public final class ObjectExtensions {
 	}
 	
 	/**
-     * @param <T>
-	 * @param object
-	 * @param ifNull
+     * @param <T> type
+	 * @param object object
+	 * @param ifNull the result value if object is null
 	 * @return object when object is not null, otherwise returns ifNull
 	 */
 	public static <T> T or(T object, T ifNull) {
