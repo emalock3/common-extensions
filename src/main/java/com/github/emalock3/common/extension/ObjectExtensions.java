@@ -14,7 +14,7 @@ public final class ObjectExtensions {
 	/**
      * @param <T> type
 	 * @param object object
-	 * @param ifNull the result value if object is null
+	 * @param ifNull the result value if the object is null
 	 * @return object when object is not null, otherwise returns ifNull
 	 */
 	public static <T> T or(T object, T ifNull) {
@@ -23,8 +23,8 @@ public final class ObjectExtensions {
     
     /**
      * 
-     * @param <T>
-     * @param object
+     * @param <T> type
+     * @param object object
      * @return Optional#empty() when object is null, otherwise returns Optional#of(object)
      */
     public static <T> Optional<T> opt(T object) {
