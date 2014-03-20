@@ -900,8 +900,7 @@ public final class StringExtensions {
         if (name == null) {
             return Optional.empty();
         }
-        Provider p = Security.getProvider(name);
-        return p != null ? Optional.of(p) : Optional.empty();
+        return Optional.ofNullable(Security.getProvider(name));
     }
     
     /**
